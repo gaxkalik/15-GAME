@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"am.aua.npuzzle"},{"l":"am.aua.npuzzle.core"}];updateSearchResults();
