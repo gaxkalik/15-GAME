@@ -5,21 +5,21 @@ package am.aua.npuzzle.core;
 public class Configuration
 {
     /** The variable to store imputed game state. */
-    private String data;
+    private final String data;
 
-    /*
-    public Configuration()
-    {
-        data = "";
-    }
-    */
-
-    /** Constructor to initialize the data
+    /**
+     * Constructor to initialize the data
+     *
      * @param data The string containing the current state of the game(e.g. "15 2 1 12 : 8 5 6 11 : 4 9 10 7 : 3 14 13 0").
      */
-    public Configuration(String data)
+    public Configuration(String data) throws ConfigurationFormatException
     {
-        this.data = data;
+        if (data == null)
+            throw new ConfigurationFormatException("NULL configuration data");
+        else if (data.length() == 0)
+            throw new ConfigurationFormatException("Empty configuration data");
+        else
+            this.data = data;
     }
 
     /** Creates a copy of an existing {@code Configuration}.
@@ -38,46 +38,58 @@ public class Configuration
         return data;
     }
 
-
-    /** For a given a 2D array of ints, representing the values of
-     * 'tiles’, updates its contents using the instance variable
-     * @param tiles game state
+    /**
+     * For a given object of type Tiles, updates its contents using the instance variable
+     *
+     * @param tiles game bord
      */
-    public void initialise (int [][] tiles)
+    public void initialise(Tiles tiles) throws ConfigurationFormatException, InvalidConfigurationException
     {
-        String[] rows = data.split(" : ");
-        if (rows.length != Puzzle15Matrix.SIZE)
+        String[] rows = data.split(": ");
+        if (rows.length != Tiles.SIZE)
+            throw new ConfigurationFormatException("Invalid configuration format: Incorrect number of rows in configuration (found " + rows.length + ").");
+        for (int i = 0; i < Tiles.SIZE; i++)
         {
-            System.out.println("ERROR: Invalid Puzzle 15 matrix");
-            System.exit(10);
-        }
-        for (int i = 0; i < Puzzle15Matrix.SIZE; i++)
-        {
-            String[] elements = rows[i].split(" ");
-            for (int j = 0; j < Puzzle15Matrix.SIZE; j++)
+            String[] values = rows[i].split(" ");
+            if (values.length != Tiles.SIZE)
+                throw new ConfigurationFormatException("Invalid configuration format: Incorrect number of columns in configuration (found " + values.length + ").");
+            try
             {
-                if (Integer.parseInt(elements[j]) < 16 && Integer.parseInt(elements[j]) >= 0)
-                {
-                    tiles[i][j] = Integer.parseInt(elements[j]);
-                } else
-                {
-                    System.out.println("ERROR: Invalid Puzzle 15 matrix");
-                    System.exit(10);
-                }
+                for (int j = 0; j < Tiles.SIZE; j++)
+                    tiles.setTile(j, i, Byte.parseByte(values[j]));
+            } catch (NumberFormatException e)
+            {
+                throw new ConfigurationFormatException("Invalid configuration format: Malformed configuration '" + data + "'.");
             }
+        }
+        tiles.ensureValidity();
+    }
+
+    /**Checks for equality
+     * @param other the class to check for equality
+     * @return true if both are equal, otherwise false
+     * */
+    @Override
+    public boolean equals(Object other)
+    {
+        if (other == null)
+            return false;
+        else if (getClass() != other.getClass())
+            return false;
+        else
+        {
+            Configuration c = (Configuration) other;
+            return data.equals(c.data);
         }
     }
 
-    /** For a given a 1D array of bytes, representing the values of
-     * 'tiles’, updates its contents using the instance variable
-     * @param tiles game state
-     */
-    public void initialise(byte[] tiles)
+    /**
+     * @return the string representation of this class
+     * */
+    @Override
+    public String toString()
     {
-        String[] temp = data.split("[ :]+");
-
-        for (int i = 0; i < Puzzle15Array.SIZE*Puzzle15Array.SIZE; i++)
-            tiles[i] = Byte.parseByte(temp[i]);
+        return "Configuration containing" +data;
     }
 
 
