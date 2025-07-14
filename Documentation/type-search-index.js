@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"am.aua.npuzzle.core","l":"Configuration"},{"p":"am.aua.npuzzle","l":"Main"},{"p":"am.aua.npuzzle.core","l":"Puzzle15Array"},{"p":"am.aua.npuzzle.core","l":"Puzzle15Matrix"}];updateSearchResults();
